@@ -25,7 +25,7 @@ Open the site, pick the form, drop in the policy copy, fill what is changing, an
 
 The home screen has two buttons.
 
-- **NBZ (New Business)**: blank NBZ forms, uploaded documents, and search.
-- **PSF (Policy Servicing)**: the four servicing forms (nomination, PSF01A, PSF01, PSF02) plus saved documents and search.
+- **NBZ (New Business)**: the nomination form (NBZ-FNOMI), plus blank NBZ forms, uploaded documents, and search.
+- **PSF (Policy Servicing)**: the servicing forms (PSF01A, PSF01, PSF02) plus saved documents and search.
 
-Each workspace keeps its own documents in its own browser database (`form-filler-nbz`, `form-filler-psf`), so records are never mixed. Completed PSF forms are saved automatically when downloaded. Documents are stored on the device only; use **Backup** and **Restore** inside each workspace to keep a copy or move to another device. Restore never overwrites an existing document, and a backup from one workspace is refused in the other.
+Each workspace keeps its own documents in its own browser database (`form-filler-nbz`, `form-filler-psf`), so records are never mixed. Completed forms are saved automatically in the workspace they belong to when downloaded. Documents are stored on the device only; use **Backup** and **Restore** inside each workspace to keep a copy or move to another device. Restore never overwrites an existing document, and a backup from one workspace is refused in the other.

@@ -201,13 +201,13 @@ ul.list{margin:0;padding-left:1.1em} ul.list li{margin:2px 0}
     <button type="button" class="hub" data-cat="nbz" aria-label="Open NBZ, New Business">
       <span class="hubtop"><span class="hubcode">NBZ</span><span class="cnt" id="cnt-nbz" aria-label="documents saved">…</span></span>
       <b>New Business</b>
-      <span class="muted">New business forms and documents. Keep blank forms, uploaded and completed documents, and search by customer name, policy number or date.</span>
+      <span class="muted">Nomination of nominees and trustees, and other new business forms. Fill the forms, and keep blank forms, uploaded and completed documents.</span>
       <span class="hubgo">Open NBZ →</span>
     </button>
     <button type="button" class="hub" data-cat="psf" aria-label="Open PSF, Policy Servicing">
       <span class="hubtop"><span class="hubcode">PSF</span><span class="cnt" id="cnt-psf" aria-label="documents saved">…</span></span>
       <b>Policy Servicing</b>
-      <span class="muted">Nomination, personal information changes, contractual changes and other servicing forms. Fill the forms, and keep uploaded and completed documents.</span>
+      <span class="muted">Personal information changes, contractual changes and other servicing forms. Fill the forms, and keep uploaded and completed documents.</span>
       <span class="hubgo">Open PSF →</span>
     </button>
   </div>
@@ -224,14 +224,6 @@ ul.list{margin:0;padding-left:1.1em} ul.list li{margin:2px 0}
         <button type="button" role="tab" id="tabDocs" data-tab="docs" aria-selected="false">Documents <span class="cnt" id="docCount">0</span></button>
       </div>
     </div>
-  </div>
-
-  <div id="nbzForms" class="vwrap" hidden>
-    <section class="card" style="margin-top:0">
-      <header><div class="grow"><h2>NBZ forms</h2><p class="small muted">Keep the blank NBZ forms you use here, ready to download again. Automatic filling for NBZ forms is not set up yet.</p></div></header>
-      <div class="row"><button type="button" class="btn primary ws" id="nbzAddBlank">＋ Add a blank NBZ form</button></div>
-      <div id="nbzBlankList" class="dlist" style="margin-top:0"></div>
-    </section>
   </div>
 
   <div id="docsView" class="vwrap" hidden>
@@ -2057,15 +2049,11 @@ function drawDocs(){
   qs("#docCount").textContent=CACHE[cat].length;
   qs("#aCustList").innerHTML=[...new Set(CACHE[cat].map(d=>d.customer).filter(Boolean))].sort().map(c=>`<option value="${H(c)}">`).join("");
 }
-function drawBlank(){
-  if(W.cat!=="nbz")return;
-  renderList("nbz",qs("#nbzBlankList"),{q:"",kind:"blank",flat:true});
-}
 let vaultUsage=null;
 async function refresh(cat){
   try{CACHE[cat]=await Vault.list(cat);ERR[cat]=""}catch(e){CACHE[cat]=[];ERR[cat]=e&&e.message?e.message:"Documents can't be saved in this browser."}
   vaultUsage=await Vault.estimate();
-  if(W.cat===cat){drawDocs();drawBlank()}
+  if(W.cat===cat)drawDocs()
   updateCounts();
 }
 async function updateCounts(){
@@ -2081,7 +2069,7 @@ async function fileOf(cat,id){const r=await Vault.get(cat,id);if(!r.meta||!r.buf
 async function onListClick(cat,e){
   const b=e.target.closest("[data-a]");if(!b)return;
   const row=b.closest("[data-id]"),id=row&&row.dataset.id,a=b.dataset.a,st=D[cat];
-  const redraw=()=>{drawDocs();drawBlank()};
+  const redraw=()=>drawDocs();
   try{
     if(a==="view"){
       const {meta,blob}=await fileOf(cat,id);
@@ -2111,7 +2099,7 @@ async function onListClick(cat,e){
     else if(a==="delyes"){await Vault.remove(cat,id);st.del=null;await refresh(cat);toast("Document deleted")}
   }catch(err){toast(err&&err.message||"Something went wrong.",null,true)}
 }
-["#dList","#nbzBlankList"].forEach(sel=>{
+["#dList"].forEach(sel=>{
   const host=qs(sel);
   host.addEventListener("click",e=>{if(W.cat)onListClick(W.cat,e)});
   host.addEventListener("click",e=>{const sm=e.target.closest("summary");if(!sm||!W.cat)return;const d=sm.parentElement;if(d&&d.dataset.key)D[W.cat].closed[d.dataset.key]=d.open});
@@ -2135,7 +2123,6 @@ function openAdd(kind){
 qs("#dAdd").addEventListener("click",()=>openAdd("uploaded"));
 qs("#aClose").addEventListener("click",()=>{qs("#dAddPanel").hidden=true});
 qs("#aKind").addEventListener("change",e=>{qs("#aCustReq").textContent=e.target.value==="blank"?"optional":"required"});
-qs("#nbzAddBlank").addEventListener("click",()=>{nav("nbz","docs");openAdd("blank")});
 qs("#aSave").addEventListener("click",async()=>{
   const cat=W.cat,msg=qs("#aMsg"),files=[...qs("#aFiles").files],kind=qs("#aKind").value,cust=qs("#aCust").value;
   const bad=t=>{msg.className="small err";msg.textContent=t};
@@ -2187,17 +2174,26 @@ qs("#dRestoreIn").addEventListener("change",async e=>{
 });
 
 /* ---------- screens and routing ---------- */
+/* each workspace offers only its own forms */
+const MODES={nbz:["nom"],psf:["psf1a","psf1","psf"]};
+let lastPsf="psf1a";
+function pickForms(cat){
+  if(typeof MODE==="string"&&MODE!=="nom")lastPsf=MODE;
+  document.querySelectorAll("#formPick .fpick").forEach(b=>{b.hidden=!MODES[cat].includes(b.dataset.mode)});
+  qs("#formPick").hidden=MODES[cat].length<2;
+  if(!MODES[cat].includes(MODE))setMode(cat==="nbz"?"nom":lastPsf);
+}
 function show(cat,tab){
   qs("#homeView").hidden=!!cat;qs("#wsView").hidden=!cat;
-  window.__fillOn=!!(cat==="psf"&&tab==="forms");
+  window.__fillOn=!!(cat&&tab==="forms");
   if(!cat){W.cat=null;updateCounts();return}
   const changed=W.cat!==cat;
   W.cat=cat;W.tab=tab;
   const ws=qs("#wsView");ws.dataset.cat=cat;
   qs("#wsBadge").textContent=CATS[cat].code;qs("#wsTitle").textContent=CATS[cat].name;
   qs("#tabForms").setAttribute("aria-selected",String(tab==="forms"));qs("#tabDocs").setAttribute("aria-selected",String(tab==="docs"));
-  qs("#fillView").hidden=!(cat==="psf"&&tab==="forms");
-  qs("#nbzForms").hidden=!(cat==="nbz"&&tab==="forms");
+  qs("#fillView").hidden=tab!=="forms";
+  if(tab==="forms")pickForms(cat);
   qs("#docsView").hidden=tab!=="docs";
   if(changed)qs("#dAddPanel").hidden=true;
   syncTools();
@@ -2221,7 +2217,7 @@ document.querySelectorAll(".wstabs [data-tab]").forEach(b=>b.addEventListener("c
 addEventListener("hashchange",route);
 
 /* ---------- used by the form filler when a download finishes ---------- */
-const FORM_INFO={nom:{cat:"psf",code:"NBZ-FNOMI",label:"Nomination"},psf1a:{cat:"psf",code:"PSF01A",label:"Person changes"},
+const FORM_INFO={nom:{cat:"nbz",code:"NBZ-FNOMI",label:"Nomination"},psf1a:{cat:"psf",code:"PSF01A",label:"Person changes"},
   psf1:{cat:"psf",code:"PSF01",label:"Contractual changes"},psf:{cat:"psf",code:"PSF02",label:"Contractual changes + health declaration"}};
 window.docMeta=(mode,customer,policyNo)=>{const f=FORM_INFO[mode]||FORM_INFO.psf;return {cat:f.cat,formCode:f.code,formLabel:f.label,customer,policyNo}};
 window.vaultKeep=async(filename,blob,meta)=>{
