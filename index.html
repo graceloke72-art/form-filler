@@ -118,8 +118,157 @@ input[aria-invalid="true"]{border-color:var(--bad);background:var(--bad-soft)}
 .fpick:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 ul.list{margin:0;padding-left:1.1em} ul.list li{margin:2px 0}
 @media (prefers-reduced-motion:no-preference){.btn,.drop,.seg button{transition:background .12s,border-color .12s}}
+/* ===== Home, workspaces and documents (NBZ and PSF kept apart) ===== */
+:root{--nbz:#2457C5;--nbz-soft:#E4ECFB;--nbz-ink:#FFFFFF;--psf:#0D6B65;--psf-soft:#E0F0ED;--psf-ink:#FFFFFF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--nbz:#8FB2FF;--nbz-soft:#16233F;--nbz-ink:#06142E;--psf:#4FC2B8;--psf-soft:#16332F;--psf-ink:#06201E}}
+:root[data-theme="dark"]{--nbz:#8FB2FF;--nbz-soft:#16233F;--nbz-ink:#06142E;--psf:#4FC2B8;--psf-soft:#16332F;--psf-ink:#06201E}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.vwrap{max-width:1040px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px))}
+.home{padding-top:max(28px,env(safe-area-inset-top,0px))}
+.home h1{font-size:2rem;margin-top:4px}
+.home .lead{margin:6px 0 0;max-width:62ch;color:var(--muted)}
+.hubs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:24px}
+@media (max-width:640px){.hubs{grid-template-columns:minmax(0,1fr);gap:12px}}
+.hub{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:8px;min-height:230px;padding:22px;border-radius:16px;background:var(--sheet);border:2px solid var(--hc);position:relative;overflow:hidden}
+@media (max-width:640px){.hub{min-height:0;padding:18px}}
+.hub[data-cat="nbz"]{--hc:var(--nbz);--hs:var(--nbz-soft);--hi:var(--nbz-ink)}
+.hub[data-cat="psf"]{--hc:var(--psf);--hs:var(--psf-soft);--hi:var(--psf-ink)}
+.hub:hover,.hub:focus-visible{background:var(--hs)}
+.hub:focus-visible{outline:3px solid var(--hc);outline-offset:3px}
+.hubtop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hubcode{font-family:var(--f-display);font-weight:800;font-size:2.4rem;letter-spacing:.02em;color:var(--hc);line-height:1}
+.hub b{font-family:var(--f-display);font-size:1.25rem}
+.hub .muted{font-size:.92rem}
+.hubgo{margin-top:auto;align-self:flex-start;background:var(--hc);color:var(--hi);font-weight:700;padding:10px 16px;border-radius:10px}
+.cnt{display:inline-block;min-width:1.6em;text-align:center;font-size:.78rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--hs,var(--accent-soft));color:var(--hc,var(--accent))}
+.wsbar{position:sticky;top:0;z-index:30;background:var(--sheet);border-bottom:3px solid var(--ws);padding-top:env(safe-area-inset-top,0px)}
+#wsView[data-cat="nbz"]{--ws:var(--nbz);--ws-soft:var(--nbz-soft);--ws-ink:var(--nbz-ink)}
+#wsView[data-cat="psf"]{--ws:var(--psf);--ws-soft:var(--psf-soft);--ws-ink:var(--psf-ink)}
+.wsbar .in{max-width:1040px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.wsbar .homebtn{padding:8px 10px;min-height:40px}
+.wsbadge{background:var(--ws);color:var(--ws-ink);font-family:var(--f-display);font-weight:800;padding:4px 10px;border-radius:8px;letter-spacing:.03em}
+.wstitle{font-family:var(--f-display);font-weight:700}
+.wstabs{display:flex;gap:4px;margin-left:auto;width:auto}
+.wstabs button{all:unset;cursor:pointer;box-sizing:border-box;padding:10px 16px;min-height:44px;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-3px;display:inline-flex;align-items:center;gap:6px}
+.wstabs button[aria-selected="true"]{border-bottom-color:var(--ws);color:var(--ws)}
+.wstabs button:focus-visible{outline:2px solid var(--ws);outline-offset:-2px}
+@media (max-width:560px){.wstabs{margin-left:0;width:100%}.wstabs button{flex:1;justify-content:center}.wstitle{font-size:.95rem}}
+.dhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.dhead p{margin:2px 0 0}
+#wsView .btn.primary.ws{background:var(--ws);border-color:var(--ws);color:var(--ws-ink)}
+.btn.sm{padding:7px 12px;font-size:.88rem;min-height:38px}
+.dtools{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-top:14px}
+.dtools .grow{flex:1;min-width:220px}
+.dtools select{min-width:150px}
+.dtools .seg button{padding:10px 14px}
+.dtools .seg button[aria-pressed="true"]{background:var(--ws);color:var(--ws-ink)}
+@media (max-width:560px){.dtools .seg{width:100%}.dtools .f{width:100%}.dtools select{width:100%}}
+.dlist{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+.dgroup{border:1px solid var(--line);border-radius:12px;background:var(--sheet);overflow:hidden}
+.dgroup>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:12px 14px;font-family:var(--f-display);font-weight:700;background:var(--ws-soft)}
+.dgroup>summary::-webkit-details-marker{display:none}
+.dgroup>summary::before{content:"▸";color:var(--ws);transition:transform .12s}
+.dgroup[open]>summary::before{transform:rotate(90deg)}
+.dgroup>summary .cnt{margin-left:auto;background:var(--sheet);color:var(--ws)}
+.dgroup>summary:focus-visible{outline:2px solid var(--ws);outline-offset:-2px}
+.doc{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.dico{flex:none;width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-family:var(--f-mono);font-size:.72rem;font-weight:600;background:var(--ws-soft);color:var(--ws)}
+.dmain{flex:1;min-width:200px;display:flex;flex-direction:column;gap:2px}
+.dtitle{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.dtitle .chip.k-completed{background:var(--good-soft);color:var(--good)}
+.dtitle .chip.k-uploaded{background:var(--ws-soft);color:var(--ws)}
+.dtitle .chip.k-blank{background:var(--warn-soft);color:var(--warn)}
+.dsub{overflow-wrap:anywhere;color:var(--muted)}
+.dnote{overflow-wrap:anywhere}
+.dact{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.dedit{flex-basis:100%;display:flex;flex-direction:column;gap:10px}
+.dconfirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.88rem}
+@media (max-width:640px){.doc{padding:12px}.dact{width:100%}.dact .btn{flex:1;justify-content:center}.dico{width:38px;height:38px}}
+.dempty{padding:26px 16px;text-align:center;border:1.5px dashed var(--line-strong);border-radius:12px;color:var(--muted)}
+.toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:min(92vw,560px);background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:10px;z-index:80;display:flex;gap:14px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.28);font-size:.9rem}
+.toast button{all:unset;cursor:pointer;font-weight:700;text-decoration:underline;padding:6px 2px}
+.toast.bad{background:var(--bad);color:#fff}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:90;display:grid;place-items:center;padding:16px}
+.modal .box{background:var(--sheet);border-radius:12px;max-width:min(96vw,900px);max-height:92vh;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.modal img{max-width:100%;height:auto;display:block;border-radius:6px}
 </style>
 
+<div id="homeView" class="vwrap home">
+  <span class="label">Great Eastern · Agent tools</span>
+  <h1>Form Filler</h1>
+  <p class="lead">Choose your workspace. NBZ and PSF are kept completely apart: each has its own forms, its own saved documents and its own search.</p>
+  <div class="hubs">
+    <button type="button" class="hub" data-cat="nbz" aria-label="Open NBZ, New Business">
+      <span class="hubtop"><span class="hubcode">NBZ</span><span class="cnt" id="cnt-nbz" aria-label="documents saved">…</span></span>
+      <b>New Business</b>
+      <span class="muted">New business forms and documents. Keep blank forms, uploaded and completed documents, and search by customer name, policy number or date.</span>
+      <span class="hubgo">Open NBZ →</span>
+    </button>
+    <button type="button" class="hub" data-cat="psf" aria-label="Open PSF, Policy Servicing">
+      <span class="hubtop"><span class="hubcode">PSF</span><span class="cnt" id="cnt-psf" aria-label="documents saved">…</span></span>
+      <b>Policy Servicing</b>
+      <span class="muted">Nomination, personal information changes, contractual changes and other servicing forms. Fill the forms, and keep uploaded and completed documents.</span>
+      <span class="hubgo">Open PSF →</span>
+    </button>
+  </div>
+  <p class="small muted" style="margin-top:20px;max-width:70ch">Saved documents stay on this phone, tablet or computer only. They are not sent anywhere and other agents cannot see them. Use Backup inside each workspace to keep a copy.</p>
+</div>
+
+<div id="wsView" hidden data-cat="psf">
+  <div class="wsbar">
+    <div class="in">
+      <button type="button" class="btn ghost homebtn" id="wsHome" aria-label="Back to home">← Home</button>
+      <span class="wsbadge" id="wsBadge">PSF</span><span class="wstitle" id="wsTitle">Policy Servicing</span>
+      <div class="wstabs" role="tablist" aria-label="Workspace sections">
+        <button type="button" role="tab" id="tabForms" data-tab="forms" aria-selected="true">Forms</button>
+        <button type="button" role="tab" id="tabDocs" data-tab="docs" aria-selected="false">Documents <span class="cnt" id="docCount">0</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="nbzForms" class="vwrap" hidden>
+    <section class="card" style="margin-top:0">
+      <header><div class="grow"><h2>NBZ forms</h2><p class="small muted">Keep the blank NBZ forms you use here, ready to download again. Automatic filling for NBZ forms is not set up yet.</p></div></header>
+      <div class="row"><button type="button" class="btn primary ws" id="nbzAddBlank">＋ Add a blank NBZ form</button></div>
+      <div id="nbzBlankList" class="dlist" style="margin-top:0"></div>
+    </section>
+  </div>
+
+  <div id="docsView" class="vwrap" hidden>
+    <div class="dhead">
+      <div><h2 id="dTitle">Documents</h2><p class="small muted" id="dSub"></p></div>
+      <div class="row">
+        <button type="button" class="btn primary ws" id="dAdd">＋ Add document</button>
+        <button type="button" class="btn" id="dBackup">Backup</button>
+        <button type="button" class="btn" id="dRestore">Restore</button>
+        <input type="file" id="dRestoreIn" accept=".json,application/json" hidden>
+      </div>
+    </div>
+    <div id="dMsg" class="note info small" style="margin-top:12px" hidden></div>
+    <section class="card" id="dAddPanel" hidden>
+      <header><div class="grow"><h2>Add a document</h2><p class="small muted">It is saved in <b id="aCat">PSF</b> only. Choose one or more files: PDF, photo or screenshot, Excel or Word.</p></div><button type="button" class="btn ghost" id="aClose">Close</button></header>
+      <label class="f"><span>Files</span><input type="file" id="aFiles" multiple accept=".pdf,image/*,.xls,.xlsx,.csv,.doc,.docx,.txt"></label>
+      <div class="grid">
+        <label class="f"><span>Type</span><select id="aKind"><option value="uploaded">Uploaded document</option><option value="blank">Blank form</option></select></label>
+        <label class="f"><span>Customer name <span class="muted" id="aCustReq" style="font-weight:400">required</span></span><input id="aCust" list="aCustList" autocomplete="off" placeholder="As in the MyKad"></label>
+        <datalist id="aCustList"></datalist>
+        <label class="f"><span>Policy number <span class="muted" style="font-weight:400">optional</span></span><input id="aPol" class="mono" inputmode="text" autocomplete="off"></label>
+        <label class="f"><span>Form code <span class="muted" style="font-weight:400">optional</span></span><input id="aCode" class="mono" autocomplete="off" placeholder="e.g. PSF01"></label>
+        <label class="f"><span>Date</span><input id="aDate" type="date"></label>
+        <label class="f span2"><span>Note <span class="muted" style="font-weight:400">optional</span></span><input id="aNote" autocomplete="off"></label>
+      </div>
+      <div class="row"><button type="button" class="btn primary ws" id="aSave">Save to <span id="aSaveCat">PSF</span></button><span class="small" id="aMsg" aria-live="polite"></span></div>
+    </section>
+    <div class="dtools">
+      <label class="f grow"><span class="sr">Search</span><input id="dSearch" type="search" placeholder="Search customer, policy number, form or date" autocomplete="off"></label>
+      <label class="f"><span>Show</span><select id="dKind"><option value="all">All documents</option><option value="completed">Completed forms</option><option value="uploaded">Uploaded documents</option><option value="blank">Blank forms</option></select></label>
+      <div class="f"><span>Group by</span><div class="seg" id="dGroup" role="group" aria-label="Group by"><button type="button" data-g="customer" aria-pressed="true">Customer</button><button type="button" data-g="policy" aria-pressed="false">Policy no.</button><button type="button" data-g="date" aria-pressed="false">Date</button></div></div>
+    </div>
+    <div id="dList" class="dlist" aria-live="polite"></div>
+    <p class="small muted" id="dFoot" style="margin-top:14px"></p>
+  </div>
+
+  <div id="fillView">
 <div class="wrap">
   <header class="top">
     <span class="label" id="formCode">Great Eastern · Form NBZ-FNOMI-V07-082025</span>
@@ -210,6 +359,10 @@ ul.list{margin:0;padding-left:1.1em} ul.list li{margin:2px 0}
     <button class="btn primary go" id="go">⬇ Download filled form</button>
   </div>
 </div>
+  </div><!-- /fillView -->
+</div><!-- /wsView -->
+<div id="toast" class="toast" role="status" hidden></div>
+<div id="viewer" class="modal" hidden></div>
 
 <script>!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t=t||self).PDFLib={})}(this,(function(t){"use strict";
 /*! *****************************************************************************
@@ -802,11 +955,14 @@ function bindPeople(){
 }
 
 /* ---------- saving a file ---------- */
-async function saveFile(filename,blob){
+async function saveFile(filename,blob,meta){
   const dl=window.claude?.use?await window.claude.use("downloads").catch(()=>null):null;
-  if(dl){await dl.save({filename,data:blob});return}
-  if(window.claude?.use)throw new Error("Saving files isn't available in this view. Open the app in Claude.");
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
+  if(dl){await dl.save({filename,data:blob})}
+  else{
+    if(window.claude?.use)throw new Error("Saving files isn't available in this view. Open the app in Claude.");
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
+  }
+  if(meta&&window.vaultKeep)window.vaultKeep(filename,blob,meta);   /* only after the download itself succeeded */
 }
 async function psfFormBytes(){return fromB64(PSF_B64)}
 /* ---------- the form ---------- */
@@ -827,8 +983,8 @@ async function download(){
       agent:{name:an,iac:ac,witness:S.witness==="me"&&!!an}};
     const res=await fillGENomination(PDFLib,await r.arrayBuffer(),data);
     const fname=`Nomination_${(o.policyNo||"policy").replace(/[^A-Za-z0-9-]/g,"")}_${(o.name||"customer").replace(/[^A-Za-z0-9]+/g,"_").replace(/^_|_$/g,"")}.pdf`;
-    try{await saveFile(fname,new Blob([res.bytes],{type:"application/pdf"}))}
-    catch(e){if(e&&e.code==="declined"){renderChecks();return}throw new Error(`The form couldn't be saved (${e&&e.code||"error"}).`)}
+    try{await saveFile(fname,new Blob([res.bytes],{type:"application/pdf"}),docMeta("nom",o.name,o.policyNo))}
+    catch(e){if(e&&e.code==="declined"){renderChecks();return}throw new Error(e&&e.code?`The form couldn't be saved (${e.code}).`:(e&&e.message)||"The form couldn't be saved.")}
     S.done=fname;persist();renderChecks();custSave({...custOf("nom")});
     if(res.notes.length){$("#checks").insertAdjacentHTML("afterbegin",`<div class="note warn"><b>Write these by hand</b><ul class="list">${res.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`)}
     $("#cardCheck").scrollIntoView({behavior:"smooth",block:"start"});
@@ -850,7 +1006,7 @@ fileIn.addEventListener("change",()=>{const f=fileIn.files[0];if(f)readPolicy(f)
 drop.addEventListener("dragover",e=>{e.preventDefault();drop.classList.add("over")});
 drop.addEventListener("dragleave",()=>drop.classList.remove("over"));
 drop.addEventListener("drop",e=>{e.preventDefault();drop.classList.remove("over");const f=e.dataTransfer.files[0];if(f)readPolicy(f)});
-document.addEventListener("paste",e=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith("image/"));if(it&&MODE==="nom"){e.preventDefault();readPolicy(new File([it.getAsFile()],"pasted screenshot.png",{type:it.type}))}});
+document.addEventListener("paste",e=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith("image/"));if(it&&MODE==="nom"&&window.__fillOn===true){e.preventDefault();readPolicy(new File([it.getAsFile()],"pasted screenshot.png",{type:it.type}))}});
 $("#readNom").addEventListener("click",()=>{
   const ps=parsePeople($("#pasteNom").value),msg=$("#nomMsg");
   if(!ps.length){note(msg,"bad","Type or paste at least one nominee first, e.g. NAME MYKAD RELATIONSHIP 100% ADDRESS.");return}
@@ -1180,7 +1336,7 @@ async function psfDownload(){
       agent:{name:an,ac}};
     const res=await fillPSF02(PDFLib,await psfFormBytes(),data,PSF_LAYOUT);
     const fname=`PSF02_${digits(P.policyNo)||"policy"}_${(A.name||P.owner.name||"customer").replace(/[^A-Za-z0-9]+/g,"_").replace(/^_|_$/g,"")}.pdf`;
-    await saveFile(fname,new Blob([res.bytes],{type:"application/pdf"}));
+    await saveFile(fname,new Blob([res.bytes],{type:"application/pdf"}),docMeta("psf",A.name||P.owner.name,P.policyNo));
     P.done=fname;psfFlush();psfRenderChecks();custSave({...custOf("psf")});
     if(res.notes.length)$("#checks").insertAdjacentHTML("afterbegin",`<div class="note warn"><b>Write these by hand</b><ul class="list">${res.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`);
     $("#cardCheck").scrollIntoView({behavior:"smooth",block:"start"});
@@ -1480,7 +1636,7 @@ async function q1Download(){
       consent:Q1.consentOn?Q1.consent.filter(c=>c.name||c.nric):[]};
     const res=await fillPSF01(PDFLib,await formBytes("psf01-form.pdf"),data,PSF01_LAYOUT);
     const fname=`PSF01_${digits(Q1.policyNo)||"policy"}_${(Q1.la.name||Q1.owner.name||"customer").replace(/[^A-Za-z0-9]+/g,"_").replace(/^_|_$/g,"")}.pdf`;
-    await saveFile(fname,new Blob([res.bytes],{type:"application/pdf"}));
+    await saveFile(fname,new Blob([res.bytes],{type:"application/pdf"}),docMeta("psf1",Q1.la.name||Q1.owner.name,Q1.policyNo));
     Q1.done=fname;q1Flush();q1RenderChecks();custSave({...custOf("psf1")});
     if(res.notes.length)$("#checks").insertAdjacentHTML("afterbegin",`<div class="note warn"><b>Write these by hand</b><ul class="list">${res.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`);
     $("#cardCheck").scrollIntoView({behavior:"smooth",block:"start"});
@@ -1702,7 +1858,7 @@ async function raDownload(){
       sign:{owner:RA.owner.name?RA.owner:null,witness:RA.witness==="me"&&an?{name:an,nric:"",tel:""}:null}};
     const res=await fillPSF01A(PDFLib,await formBytes("psf01a-form.pdf"),data,PSF01A_LAYOUT);
     const fname=`PSF01A_${digits(RA.policyNo)||"policy"}_${(RA.la.name||RA.owner.name||"customer").replace(/[^A-Za-z0-9]+/g,"_").replace(/^_|_$/g,"")}.pdf`;
-    await saveFile(fname,new Blob([res.bytes],{type:"application/pdf"}));
+    await saveFile(fname,new Blob([res.bytes],{type:"application/pdf"}),docMeta("psf1a",RA.la.name||RA.owner.name,RA.policyNo));
     RA.done=fname;raFlush();raRenderChecks();custSave({...custOf("psf1a")});
     if(res.notes.length)$("#checks").insertAdjacentHTML("afterbegin",`<div class="note warn"><b>Write these by hand</b><ul class="list">${res.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`);
     $("#cardCheck").scrollIntoView({behavior:"smooth",block:"start"});
@@ -1735,6 +1891,353 @@ $("#clearAll").addEventListener("click",()=>{const c=$("#clearConfirm");c.hidden
 setMode(MODE);
 (async()=>{sample=await window.claude?.use?.("sample").catch(()=>null)||null;})();
 
+</script>
+<script>
+(()=>{
+"use strict";
+/* ============ Saved documents: NBZ and PSF are two separate stores ============
+   Each category has its own browser database ("form-filler-nbz", "form-filler-psf").
+   Nothing here reads or writes the form drafts the filler already keeps. */
+const CATS={nbz:{code:"NBZ",name:"New Business"},psf:{code:"PSF",name:"Policy Servicing"}};
+const KIND={completed:"Completed",uploaded:"Uploaded",blank:"Blank form"};
+const qs=(s,r)=>(r||document).querySelector(s);
+const H=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const p2=n=>String(n).padStart(2,"0");
+const iso=t=>{const d=new Date(t);return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())};
+const fmtDate=t=>{const d=new Date(t);return d.getDate()+" "+MON[d.getMonth()]+" "+d.getFullYear()};
+const fmtSize=n=>n<1024?n+" B":n<1048576?Math.round(n/1024)+" KB":(n/1048576).toFixed(1)+" MB";
+const normPolicy=s=>String(s||"").toUpperCase().replace(/[^A-Z0-9-]/g,"");
+const normName=s=>String(s||"").toUpperCase().replace(/\s+/g," ").trim();
+const uid=()=>(window.crypto&&crypto.randomUUID?crypto.randomUUID():"d"+Date.now().toString(36)+Math.random().toString(36).slice(2,10));
+const noon=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d,12).getTime()};
+
+/* ---------- the vault ---------- */
+const dbs={};
+function open(cat){
+  if(!CATS[cat])return Promise.reject(new Error("Unknown workspace"));
+  if(dbs[cat])return dbs[cat];
+  return dbs[cat]=new Promise((res,rej)=>{
+    if(!window.indexedDB){rej(new Error("This browser can't keep documents."));return}
+    let r;try{r=indexedDB.open("form-filler-"+cat,1)}catch(e){rej(e);return}
+    r.onupgradeneeded=()=>{const db=r.result;db.createObjectStore("meta",{keyPath:"id"});db.createObjectStore("data")};
+    r.onsuccess=()=>res(r.result);
+    r.onerror=()=>rej(r.error||new Error("Storage error"));
+    r.onblocked=()=>rej(new Error("Storage is busy. Close other Form Filler tabs and try again."));
+  }).catch(e=>{delete dbs[cat];throw e});
+}
+const rq=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+async function tx(cat,fn){
+  const db=await open(cat);
+  return new Promise((res,rej)=>{
+    const t=db.transaction(["meta","data"],"readwrite");
+    t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error||new Error("Storage stopped"));
+    try{fn(t.objectStore("meta"),t.objectStore("data"))}catch(e){try{t.abort()}catch(_){}rej(e)}
+  });
+}
+const Vault={
+  async list(cat){const db=await open(cat);return rq(db.transaction("meta").objectStore("meta").getAll())},
+  async count(cat){const db=await open(cat);return rq(db.transaction("meta").objectStore("meta").count())},
+  async get(cat,id){const db=await open(cat);const t=db.transaction(["meta","data"]);
+    const [meta,buf]=await Promise.all([rq(t.objectStore("meta").get(id)),rq(t.objectStore("data").get(id))]);return {meta,buf}},
+  /* add never replaces: a repeated id is refused by the database */
+  async add(cat,f,buf){
+    const now=Date.now();
+    const rec={id:f.id||uid(),category:cat,kind:f.kind||"uploaded",source:f.source||"upload",
+      customer:normName(f.customer),policyNo:normPolicy(f.policyNo),formCode:String(f.formCode||"").trim().toUpperCase(),
+      formLabel:f.formLabel||"",filename:f.filename||"document",mime:f.mime||"application/octet-stream",
+      size:buf.byteLength,at:f.at||now,created:f.created||now,note:String(f.note||"").trim()};
+    await tx(cat,(m,d)=>{m.add(rec);d.add(buf,rec.id)});
+    return rec;
+  },
+  async update(cat,id,p){
+    const patch={};
+    if("customer" in p)patch.customer=normName(p.customer);
+    if("policyNo" in p)patch.policyNo=normPolicy(p.policyNo);
+    if("formCode" in p)patch.formCode=String(p.formCode||"").trim().toUpperCase();
+    if("note" in p)patch.note=String(p.note||"").trim();
+    if("at" in p)patch.at=p.at;
+    if("filename" in p&&String(p.filename).trim())patch.filename=String(p.filename).trim();
+    await tx(cat,m=>{const g=m.get(id);g.onsuccess=()=>{if(g.result)m.put({...g.result,...patch,id,category:cat})}});
+  },
+  async remove(cat,id){await tx(cat,(m,d)=>{m.delete(id);d.delete(id)})},
+  async estimate(){try{const e=await navigator.storage.estimate();return e&&e.usage}catch(_){return null}}
+};
+let askedPersist=false;
+function persistOnce(){if(askedPersist)return;askedPersist=true;try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(_){}}
+function b64(buf){const u=new Uint8Array(buf);let s="";for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)}
+function unb64(s){const bin=atob(s);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer}
+
+/* ---------- state ---------- */
+const W={cat:null,tab:"forms"};
+const CACHE={nbz:[],psf:[]},ERR={nbz:"",psf:""};
+const D={nbz:{q:"",kind:"all",group:"customer",edit:null,del:null,closed:{}},psf:{q:"",kind:"all",group:"customer",edit:null,del:null,closed:{}}};
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg,action,bad){
+  const t=qs("#toast");clearTimeout(toastT);
+  t.className="toast"+(bad?" bad":"");t.hidden=false;
+  t.innerHTML=`<span>${H(msg)}</span>`+(action?`<button type="button">${H(action.label)}</button>`:"");
+  if(action)t.querySelector("button").addEventListener("click",()=>{t.hidden=true;action.run()});
+  toastT=setTimeout(()=>{t.hidden=true},bad?9000:6000);
+}
+
+/* ---------- finding, grouping, drawing ---------- */
+function haystack(d){return [d.customer,d.policyNo,d.formCode,d.formLabel,d.filename,d.note,KIND[d.kind],iso(d.at),fmtDate(d.at)].join(" ").toLowerCase()}
+function filtered(cat,o){
+  const toks=(o.q||"").toLowerCase().split(/\s+/).filter(Boolean);
+  return CACHE[cat].filter(d=>(o.kind==="all"||d.kind===o.kind)&&toks.every(t=>haystack(d).includes(t)));
+}
+function groups(list,by){
+  const m=new Map();
+  list.forEach(d=>{
+    let k,label;
+    if(by==="policy"){k=d.policyNo||"";label=k?"Policy "+k:"No policy number"}
+    else if(by==="date"){const t=new Date(d.at);k=t.getFullYear()+"-"+p2(t.getMonth()+1);label=MON[t.getMonth()]+" "+t.getFullYear()}
+    else{k=d.customer||"";label=k||"No customer name"}
+    if(!m.has(k))m.set(k,{k,label,items:[]});m.get(k).items.push(d);
+  });
+  const arr=[...m.values()];
+  arr.forEach(g=>g.items.sort((a,b)=>b.at-a.at||b.created-a.created));
+  if(by==="date")arr.sort((a,b)=>a.k<b.k?1:-1);
+  else arr.sort((a,b)=>!a.k?1:!b.k?-1:a.k.localeCompare(b.k,undefined,{numeric:true}));
+  return arr;
+}
+function iconOf(d){
+  const ext=(d.filename.split(".").pop()||"").toLowerCase(),mt=(d.mime||"").toLowerCase();
+  if(mt.includes("pdf")||ext==="pdf")return "PDF";
+  if(mt.startsWith("image/"))return "IMG";
+  if(/sheet|excel|csv/.test(mt)||/^(xls|xlsx|csv)$/.test(ext))return "XLS";
+  if(/word|msword/.test(mt)||/^(doc|docx)$/.test(ext))return "DOC";
+  return "FILE";
+}
+function rowHTML(cat,d){
+  const st=D[cat];
+  if(st.edit===d.id)return `<article class="doc" data-id="${H(d.id)}"><div class="dedit">
+    <div class="grid">
+      <label class="f"><span>Customer name</span><input class="e-cust" value="${H(d.customer)}" autocomplete="off"></label>
+      <label class="f"><span>Policy number</span><input class="e-pol mono" value="${H(d.policyNo)}" autocomplete="off"></label>
+      <label class="f"><span>Form code</span><input class="e-code mono" value="${H(d.formCode)}" autocomplete="off"></label>
+      <label class="f"><span>Date</span><input class="e-date" type="date" value="${iso(d.at)}"></label>
+      <label class="f span2"><span>File name</span><input class="e-file" value="${H(d.filename)}" autocomplete="off"></label>
+      <label class="f span2"><span>Note</span><input class="e-note" value="${H(d.note)}" autocomplete="off"></label>
+    </div>
+    <div class="row"><button type="button" class="btn primary sm ws" data-a="esave">Save changes</button><button type="button" class="btn sm" data-a="ecancel">Cancel</button><span class="small err e-err" role="alert"></span></div></div></article>`;
+  const meta=[d.customer&&H(d.customer),d.policyNo&&"Policy "+H(d.policyNo),fmtDate(d.at),fmtSize(d.size)].filter(Boolean).join(" · ");
+  const acts=st.del===d.id
+    ?`<div class="dconfirm"><span>Delete this document for good?</span><button type="button" class="btn sm danger" data-a="delyes">Delete</button><button type="button" class="btn sm" data-a="delno">Keep</button></div>`
+    :`<div class="dact"><button type="button" class="btn sm" data-a="view">View</button><button type="button" class="btn sm" data-a="dl">Download</button><button type="button" class="btn sm" data-a="edit">Edit</button><button type="button" class="btn sm danger" data-a="del">Delete</button></div>`;
+  return `<article class="doc" data-id="${H(d.id)}"><div class="dico" aria-hidden="true">${iconOf(d)}</div>
+    <div class="dmain"><div class="dtitle"><b style="overflow-wrap:anywhere">${H(d.formCode||d.formLabel||d.filename)}</b><span class="chip k-${H(d.kind)}">${KIND[d.kind]||"Document"}</span></div>
+    ${d.formCode||d.formLabel?`<div class="dsub mono small">${H(d.filename)}</div>`:""}<div class="small muted">${meta}</div>${d.note?`<div class="dnote small">${H(d.note)}</div>`:""}</div>${acts}</article>`;
+}
+function renderList(cat,host,o){
+  if(ERR[cat]){host.innerHTML=`<div class="note bad">${H(ERR[cat])} You can still fill and download forms as usual.</div>`;return 0}
+  const list=filtered(cat,o);
+  if(!list.length){
+    host.innerHTML=`<div class="dempty">${o.flat?"No blank forms saved yet.":CACHE[cat].length?"No documents match this search.":"No documents saved yet in "+CATS[cat].code+"."}</div>`;return 0}
+  if(o.flat){
+    list.sort((a,b)=>(a.formCode||a.filename).localeCompare(b.formCode||b.filename));
+    host.innerHTML=`<div class="dgroup" style="border:0">${list.map(d=>rowHTML(cat,d)).join("")}</div>`;return list.length}
+  const gs=groups(list,o.group),st=D[cat],searching=!!(o.q||"").trim();
+  host.innerHTML=gs.map(g=>{
+    const key=o.group+":"+g.k,open=st.closed[key]===true?false:st.closed[key]===false?true:(gs.length<=12||searching);
+    return `<details class="dgroup" data-key="${H(key)}"${open?" open":""}><summary>${H(g.label)}<span class="cnt">${g.items.length}</span></summary>${g.items.map(d=>rowHTML(cat,d)).join("")}</details>`}).join("");
+  return list.length;
+}
+function drawDocs(){
+  const cat=W.cat;if(!cat)return;const st=D[cat];
+  qs("#dTitle").textContent=CATS[cat].code+" documents";
+  qs("#dSub").textContent=cat==="nbz"?"New Business. Blank forms, uploaded and completed documents. Kept separate from PSF.":"Policy Servicing. Completed forms are saved here when you download them. Kept separate from NBZ.";
+  qs("#aCat").textContent=CATS[cat].code;qs("#aSaveCat").textContent=CATS[cat].code;
+  qs("#dList").hidden=false;
+  const n=renderList(cat,qs("#dList"),{q:st.q,kind:st.kind,group:st.group});
+  qs("#dFoot").textContent=ERR[cat]?"":`${n} of ${CACHE[cat].length} ${CATS[cat].code} document${CACHE[cat].length===1?"":"s"} shown.`+(vaultUsage?` Browser storage used by Form Filler: ${fmtSize(vaultUsage)}.`:"");
+  qs("#docCount").textContent=CACHE[cat].length;
+  qs("#aCustList").innerHTML=[...new Set(CACHE[cat].map(d=>d.customer).filter(Boolean))].sort().map(c=>`<option value="${H(c)}">`).join("");
+}
+function drawBlank(){
+  if(W.cat!=="nbz")return;
+  renderList("nbz",qs("#nbzBlankList"),{q:"",kind:"blank",flat:true});
+}
+let vaultUsage=null;
+async function refresh(cat){
+  try{CACHE[cat]=await Vault.list(cat);ERR[cat]=""}catch(e){CACHE[cat]=[];ERR[cat]=e&&e.message?e.message:"Documents can't be saved in this browser."}
+  vaultUsage=await Vault.estimate();
+  if(W.cat===cat){drawDocs();drawBlank()}
+  updateCounts();
+}
+async function updateCounts(){
+  for(const cat of Object.keys(CATS)){
+    let n="–";try{n=await Vault.count(cat)}catch(_){}
+    const el=qs("#cnt-"+cat);if(el)el.textContent=n;
+    if(W.cat===cat&&typeof n==="number")qs("#docCount").textContent=n;
+  }
+}
+
+/* ---------- actions on a document ---------- */
+async function fileOf(cat,id){const r=await Vault.get(cat,id);if(!r.meta||!r.buf)throw new Error("That document could not be found.");return {meta:r.meta,blob:new Blob([r.buf],{type:r.meta.mime||"application/octet-stream"})}}
+async function onListClick(cat,e){
+  const b=e.target.closest("[data-a]");if(!b)return;
+  const row=b.closest("[data-id]"),id=row&&row.dataset.id,a=b.dataset.a,st=D[cat];
+  const redraw=()=>{drawDocs();drawBlank()};
+  try{
+    if(a==="view"){
+      const {meta,blob}=await fileOf(cat,id);
+      if(meta.mime&&meta.mime.startsWith("image/")){
+        const url=URL.createObjectURL(blob),v=qs("#viewer");
+        v.innerHTML=`<div class="box" role="dialog" aria-label="${H(meta.filename)}"><div class="row"><b class="grow" style="flex:1">${H(meta.filename)}</b><button type="button" class="btn sm" id="vClose">Close</button></div><img alt="${H(meta.filename)}" src="${url}"></div>`;
+        v.hidden=false;const close=()=>{v.hidden=true;v.innerHTML="";URL.revokeObjectURL(url)};
+        qs("#vClose").addEventListener("click",close);v.onclick=ev=>{if(ev.target===v)close()};
+      }else{
+        const url=URL.createObjectURL(blob),w=window.open(url,"_blank");
+        if(!w){await saveFile(meta.filename,blob);toast("Downloaded "+meta.filename)}
+        setTimeout(()=>URL.revokeObjectURL(url),120000);
+      }
+    }else if(a==="dl"){const {meta,blob}=await fileOf(cat,id);await saveFile(meta.filename,blob)}
+    else if(a==="edit"){st.edit=id;st.del=null;redraw()}
+    else if(a==="ecancel"){st.edit=null;redraw()}
+    else if(a==="esave"){
+      const g=c=>row.querySelector(c).value,d=CACHE[cat].find(x=>x.id===id),err=row.querySelector(".e-err");
+      if(d.kind!=="blank"&&!normName(g(".e-cust"))){err.textContent="Enter the customer name.";return}
+      if(!g(".e-file").trim()){err.textContent="Enter a file name.";return}
+      const dv=g(".e-date"),p={customer:g(".e-cust"),policyNo:g(".e-pol"),formCode:g(".e-code"),note:g(".e-note"),filename:g(".e-file")};
+      if(dv&&dv!==iso(d.at))p.at=noon(dv);
+      await Vault.update(cat,id,p);st.edit=null;await refresh(cat);toast("Changes saved");
+    }
+    else if(a==="del"){st.del=id;st.edit=null;redraw()}
+    else if(a==="delno"){st.del=null;redraw()}
+    else if(a==="delyes"){await Vault.remove(cat,id);st.del=null;await refresh(cat);toast("Document deleted")}
+  }catch(err){toast(err&&err.message||"Something went wrong.",null,true)}
+}
+["#dList","#nbzBlankList"].forEach(sel=>{
+  const host=qs(sel);
+  host.addEventListener("click",e=>{if(W.cat)onListClick(W.cat,e)});
+  host.addEventListener("click",e=>{const sm=e.target.closest("summary");if(!sm||!W.cat)return;const d=sm.parentElement;if(d&&d.dataset.key)D[W.cat].closed[d.dataset.key]=d.open});
+});
+
+/* ---------- search and filters ---------- */
+qs("#dSearch").addEventListener("input",e=>{if(!W.cat)return;D[W.cat].q=e.target.value;drawDocs()});
+qs("#dKind").addEventListener("change",e=>{if(!W.cat)return;D[W.cat].kind=e.target.value;drawDocs()});
+qs("#dGroup").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b||!W.cat)return;D[W.cat].group=b.dataset.g;syncTools();drawDocs()});
+function syncTools(){
+  const st=D[W.cat];qs("#dSearch").value=st.q;qs("#dKind").value=st.kind;
+  document.querySelectorAll("#dGroup [data-g]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.g===st.group)));
+}
+
+/* ---------- adding documents ---------- */
+function openAdd(kind){
+  const p=qs("#dAddPanel");p.hidden=false;qs("#aKind").value=kind||"uploaded";qs("#aDate").value=iso(Date.now());
+  qs("#aMsg").textContent="";qs("#aCustReq").textContent=qs("#aKind").value==="blank"?"optional":"required";
+  p.scrollIntoView({behavior:"smooth",block:"start"});
+}
+qs("#dAdd").addEventListener("click",()=>openAdd("uploaded"));
+qs("#aClose").addEventListener("click",()=>{qs("#dAddPanel").hidden=true});
+qs("#aKind").addEventListener("change",e=>{qs("#aCustReq").textContent=e.target.value==="blank"?"optional":"required"});
+qs("#nbzAddBlank").addEventListener("click",()=>{nav("nbz","docs");openAdd("blank")});
+qs("#aSave").addEventListener("click",async()=>{
+  const cat=W.cat,msg=qs("#aMsg"),files=[...qs("#aFiles").files],kind=qs("#aKind").value,cust=qs("#aCust").value;
+  const bad=t=>{msg.className="small err";msg.textContent=t};
+  if(!files.length)return bad("Choose at least one file.");
+  if(kind!=="blank"&&!normName(cust))return bad("Enter the customer name.");
+  const big=files.find(f=>f.size>25*1048576);if(big)return bad(`${big.name} is over 25 MB. Choose a smaller file.`);
+  const dv=qs("#aDate").value,at=dv?noon(dv):Date.now(),btn=qs("#aSave");btn.disabled=true;msg.className="small";msg.textContent="Saving…";
+  try{
+    persistOnce();
+    for(const f of files){
+      await Vault.add(cat,{kind,source:"upload",customer:cust,policyNo:qs("#aPol").value,formCode:qs("#aCode").value,note:qs("#aNote").value,
+        filename:f.name,mime:f.type||"application/octet-stream",at},await f.arrayBuffer());
+    }
+    qs("#aFiles").value="";qs("#aNote").value="";
+    msg.className="small";msg.textContent=`Saved ${files.length} file${files.length===1?"":"s"} to ${CATS[cat].code}.`;
+    await refresh(cat);
+  }catch(e){bad(e&&e.message||"Couldn't save. Check the browser has free storage.")}
+  finally{btn.disabled=false}
+});
+
+/* ---------- backup and restore, one workspace at a time ---------- */
+qs("#dBackup").addEventListener("click",async()=>{
+  const cat=W.cat,note=qs("#dMsg");
+  try{
+    const metas=await Vault.list(cat);
+    if(!metas.length){note.hidden=false;note.className="note warn small";note.textContent="Nothing to back up yet in "+CATS[cat].code+".";return}
+    const records=[];for(const m of metas){const r=await Vault.get(cat,m.id);if(r.buf)records.push({...m,dataB64:b64(r.buf)})}
+    const out={app:"form-filler-vault",version:1,category:cat,exported:new Date().toISOString(),records};
+    await saveFile(`FormFiller_${CATS[cat].code}_backup_${iso(Date.now())}.json`,new Blob([JSON.stringify(out)],{type:"application/json"}));
+    note.hidden=false;note.className="note good small";note.textContent=`Backed up ${records.length} ${CATS[cat].code} document${records.length===1?"":"s"}. Keep the file somewhere safe.`;
+  }catch(e){note.hidden=false;note.className="note bad small";note.textContent=(e&&e.message)||"Backup failed."}
+});
+qs("#dRestore").addEventListener("click",()=>qs("#dRestoreIn").click());
+qs("#dRestoreIn").addEventListener("change",async e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;
+  const cat=W.cat,note=qs("#dMsg"),say=(c,t)=>{note.hidden=false;note.className="note "+c+" small";note.textContent=t};
+  try{
+    const o=JSON.parse(await f.text());
+    if(!o||o.app!=="form-filler-vault"||!Array.isArray(o.records))return say("bad","That is not a Form Filler backup file.");
+    if(o.category!==cat)return say("bad",`That backup belongs to ${CATS[o.category]?CATS[o.category].code:"another workspace"}. Open ${CATS[o.category]?CATS[o.category].code:"the right workspace"} to restore it. Nothing was changed.`);
+    const have=new Set((await Vault.list(cat)).map(x=>x.id));let added=0,skipped=0;
+    for(const r of o.records){
+      if(!r||!r.id||!r.dataB64||(r.category&&r.category!==cat)||have.has(r.id)){skipped++;continue}
+      const {dataB64,...meta}=r;await Vault.add(cat,meta,unb64(dataB64));added++;
+    }
+    persistOnce();await refresh(cat);
+    say("good",`Restored ${added} document${added===1?"":"s"}.`+(skipped?` ${skipped} already here or not valid, left as they are.`:""));
+  }catch(err){say("bad","The backup couldn't be read. "+(err&&err.message||""))}
+});
+
+/* ---------- screens and routing ---------- */
+function show(cat,tab){
+  qs("#homeView").hidden=!!cat;qs("#wsView").hidden=!cat;
+  window.__fillOn=!!(cat==="psf"&&tab==="forms");
+  if(!cat){W.cat=null;updateCounts();return}
+  const changed=W.cat!==cat;
+  W.cat=cat;W.tab=tab;
+  const ws=qs("#wsView");ws.dataset.cat=cat;
+  qs("#wsBadge").textContent=CATS[cat].code;qs("#wsTitle").textContent=CATS[cat].name;
+  qs("#tabForms").setAttribute("aria-selected",String(tab==="forms"));qs("#tabDocs").setAttribute("aria-selected",String(tab==="docs"));
+  qs("#fillView").hidden=!(cat==="psf"&&tab==="forms");
+  qs("#nbzForms").hidden=!(cat==="nbz"&&tab==="forms");
+  qs("#docsView").hidden=tab!=="docs";
+  if(changed)qs("#dAddPanel").hidden=true;
+  syncTools();
+  refresh(cat);
+  window.scrollTo(0,0);
+}
+function nav(cat,tab){
+  const h=cat?"#/"+cat+(tab==="docs"?"/docs":""):"#/";
+  if(location.hash!==h){try{location.hash=h}catch(_){}}
+  show(cat,tab||"forms");
+}
+function route(){
+  const h=(location.hash||"").replace(/^#\/?/,"").split("/").filter(Boolean);
+  const cat=CATS[h[0]]?h[0]:null;
+  if(cat===W.cat&&(h[1]==="docs"?"docs":"forms")===W.tab&&!qs("#wsView").hidden===!!cat)return;
+  show(cat,h[1]==="docs"?"docs":"forms");
+}
+document.querySelectorAll(".hub").forEach(b=>b.addEventListener("click",()=>nav(b.dataset.cat,"forms")));
+qs("#wsHome").addEventListener("click",()=>nav(null));
+document.querySelectorAll(".wstabs [data-tab]").forEach(b=>b.addEventListener("click",()=>nav(W.cat,b.dataset.tab)));
+addEventListener("hashchange",route);
+
+/* ---------- used by the form filler when a download finishes ---------- */
+const FORM_INFO={nom:{cat:"psf",code:"NBZ-FNOMI",label:"Nomination"},psf1a:{cat:"psf",code:"PSF01A",label:"Person changes"},
+  psf1:{cat:"psf",code:"PSF01",label:"Contractual changes"},psf:{cat:"psf",code:"PSF02",label:"Contractual changes + health declaration"}};
+window.docMeta=(mode,customer,policyNo)=>{const f=FORM_INFO[mode]||FORM_INFO.psf;return {cat:f.cat,formCode:f.code,formLabel:f.label,customer,policyNo}};
+window.vaultKeep=async(filename,blob,meta)=>{
+  const C=CATS[meta&&meta.cat];if(!C)return;
+  try{
+    persistOnce();
+    await Vault.add(meta.cat,{kind:"completed",source:"filled",customer:meta.customer,policyNo:meta.policyNo,formCode:meta.formCode,formLabel:meta.formLabel,filename,mime:blob.type||"application/pdf"},await blob.arrayBuffer());
+    toast(`Also saved in ${C.code} documents`,{label:"Open",run:()=>nav(meta.cat,"docs")});
+    updateCounts();if(W.cat===meta.cat&&W.tab==="docs")refresh(meta.cat);
+  }catch(e){toast(`Downloaded. A copy could not be kept in ${C.code} documents on this device.`,null,true)}
+};
+
+window.__fillOn=false;
+route();
+updateCounts();
+})();
 </script>
 
 </body></html>
