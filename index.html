@@ -191,6 +191,13 @@ ul.list{margin:0;padding-left:1.1em} ul.list li{margin:2px 0}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:90;display:grid;place-items:center;padding:16px}
 .modal .box{background:var(--sheet);border-radius:12px;max-width:min(96vw,900px);max-height:92vh;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
 .modal img{max-width:100%;height:auto;display:block;border-radius:6px}
+.freshhead{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.freshhead .grow{flex:1;min-width:220px}.freshhead p{margin:2px 0 0}
+.freshbtn{font-size:1.02rem;padding:13px 20px;min-height:48px}
+.freshfile{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.freshprev{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:10px;display:grid;place-items:center;min-height:120px;overflow:hidden}
+.freshprev img,.freshprev canvas{max-width:100%;max-height:420px;width:auto;height:auto;display:block;border-radius:4px;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.18)}
+@media (max-width:560px){.freshbtn{width:100%;justify-content:center}.freshfile .dact{width:100%}.freshfile .dact .btn{flex:1;justify-content:center}}
 </style>
 
 <div id="homeView" class="vwrap home">
@@ -224,6 +231,25 @@ ul.list{margin:0;padding-left:1.1em} ul.list li{margin:2px 0}
         <button type="button" role="tab" id="tabDocs" data-tab="docs" aria-selected="false">Documents <span class="cnt" id="docCount">0</span></button>
       </div>
     </div>
+  </div>
+
+  <div id="freshWrap" class="vwrap" style="max-width:760px;padding-bottom:0" hidden>
+    <section class="card fresh" style="margin-top:0" aria-labelledby="freshTitle">
+      <div class="freshhead">
+        <div class="grow"><h2 id="freshTitle">Upload fresh form</h2><p class="small muted" id="freshHint">Have a new blank form? Upload it as a PDF, JPG or PNG. It is kept in <b class="freshcat">NBZ</b> Documents.</p></div>
+        <button type="button" class="btn primary ws freshbtn" id="freshBtn"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v5h16v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Upload Fresh Form</button>
+      </div>
+      <input type="file" id="freshIn" hidden accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
+      <div id="freshMsg" class="note" role="status" hidden></div>
+      <div id="freshView" hidden>
+        <div class="freshfile">
+          <div class="dico" id="freshIcon" aria-hidden="true">PDF</div>
+          <div class="dmain"><b id="freshName" style="overflow-wrap:anywhere"></b><div class="small muted" id="freshMeta"></div></div>
+          <div class="dact" id="freshActs"></div>
+        </div>
+        <div id="freshPrev" class="freshprev" aria-live="polite"></div>
+      </div>
+    </section>
   </div>
 
   <div id="docsView" class="vwrap" hidden>
@@ -2053,7 +2079,7 @@ let vaultUsage=null;
 async function refresh(cat){
   try{CACHE[cat]=await Vault.list(cat);ERR[cat]=""}catch(e){CACHE[cat]=[];ERR[cat]=e&&e.message?e.message:"Documents can't be saved in this browser."}
   vaultUsage=await Vault.estimate();
-  if(W.cat===cat)drawDocs()
+  if(W.cat===cat){drawDocs();drawFresh()}
   updateCounts();
 }
 async function updateCounts(){
@@ -2173,6 +2199,84 @@ qs("#dRestoreIn").addEventListener("change",async e=>{
   }catch(err){say("bad","The backup couldn't be read. "+(err&&err.message||""))}
 });
 
+
+/* ---------- Upload Fresh Form: one fresh form per workspace, kept in that workspace's documents ---------- */
+const FRESH_EXT={pdf:"application/pdf",jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png"};
+const TEMP={nbz:null,psf:null};            /* shown but not saved, only if the browser refuses to store it */
+let freshTok=0,freshUrl=null,freshDel=false;
+const latestFresh=cat=>(CACHE[cat]||[]).filter(d=>d.source==="fresh").sort((a,b)=>b.created-a.created)[0];
+function freshMsg(kind,text){const m=qs("#freshMsg");if(!kind){m.hidden=true;return}m.hidden=false;m.className="note "+kind;m.textContent=text}
+function freshClearPrev(){if(freshUrl){URL.revokeObjectURL(freshUrl);freshUrl=null}qs("#freshPrev").innerHTML=""}
+async function freshPreview(blob,mime,tok){
+  const host=qs("#freshPrev");freshClearPrev();
+  const none=t=>{if(tok===freshTok)host.innerHTML=`<span class="small muted">${H(t)}</span>`};
+  if(mime.startsWith("image/")){
+    freshUrl=URL.createObjectURL(blob);const img=new Image();img.alt="Preview of the uploaded form";img.src=freshUrl;
+    img.onerror=()=>none("Preview not available for this image. The file is saved.");host.appendChild(img);return}
+  host.innerHTML='<span class="small muted">Loading preview…</span>';
+  try{
+    await loadScript(LIB.pdf);await loadScript(LIB.pdfw).catch(()=>{});
+    const lib=await waitFor(()=>window.pdfjsLib||window["pdfjs-dist/build/pdf"]);if(!lib)throw new Error("lib");
+    const pdf=await lib.getDocument({data:new Uint8Array(await blob.arrayBuffer()),isEvalSupported:false}).promise;
+    const pg=await pdf.getPage(1),w=Math.min(760,Math.max(240,host.clientWidth-20)),v0=pg.getViewport({scale:1}),sc=Math.min(2,(w/v0.width)*(window.devicePixelRatio||1)),vp=pg.getViewport({scale:sc});
+    const cv=document.createElement("canvas");cv.width=vp.width;cv.height=vp.height;cv.setAttribute("aria-label","Preview of page 1 of the uploaded form");
+    await pg.render({canvasContext:cv.getContext("2d"),viewport:vp}).promise;
+    if(tok!==freshTok)return;host.innerHTML="";host.appendChild(cv);
+    if(pdf.numPages>1){const n=document.createElement("div");n.className="small muted";n.style.marginTop="6px";n.textContent=`Page 1 of ${pdf.numPages}`;host.appendChild(n)}
+  }catch(e){none("Preview not available here. The file name above is the file you chose.")}
+}
+async function drawFresh(){
+  const cat=W.cat;if(!cat)return;const tok=++freshTok;
+  document.querySelectorAll(".freshcat").forEach(e=>e.textContent=CATS[cat].code);
+  const rec=latestFresh(cat),tmp=TEMP[cat];
+  qs("#freshView").hidden=!(rec||tmp);
+  qs("#freshHint").innerHTML=(rec||tmp)?`A fresh form is loaded. Upload again to replace it, or remove it.`:`Have a new blank form? Upload it as a PDF, JPG or PNG. It is kept in <b class="freshcat">${CATS[cat].code}</b> Documents.`;
+  if(!rec&&!tmp){freshClearPrev();return}
+  const d=rec||tmp;
+  qs("#freshName").textContent=d.filename;
+  qs("#freshMeta").textContent=[fmtSize(d.size),rec?`Saved in ${CATS[cat].code} Documents`:"Not saved on this device (preview only)"].join(" · ");
+  qs("#freshIcon").textContent=(d.mime||"").startsWith("image/")?"IMG":"PDF";
+  qs("#freshActs").innerHTML=freshDel
+    ?`<div class="dconfirm"><span>Remove this form?</span><button type="button" class="btn sm danger" data-f="yes">Remove</button><button type="button" class="btn sm" data-f="no">Keep</button></div>`
+    :`<button type="button" class="btn sm" data-f="replace">Replace</button><button type="button" class="btn sm danger" data-f="remove">Remove</button>`;
+  try{
+    let blob;
+    if(rec){const r=await Vault.get(cat,rec.id);if(tok!==freshTok)return;blob=new Blob([r.buf],{type:r.meta.mime})}else blob=tmp.blob;
+    await freshPreview(blob,d.mime||"",tok);
+  }catch(e){qs("#freshPrev").innerHTML='<span class="small muted">Preview not available.</span>'}
+}
+async function freshTake(file){
+  const cat=W.cat;if(!file||!cat)return;
+  const ext=(file.name.split(".").pop()||"").toLowerCase(),mime=FRESH_EXT[ext];
+  if(!mime||(file.type&&!/^(application\/pdf|image\/(jpeg|png))$/.test(file.type)))return freshMsg("bad","That file type isn't supported. Choose a PDF, JPG, JPEG or PNG file.");
+  if(file.size>25*1048576)return freshMsg("bad","That file is over 25 MB. Choose a smaller file.");
+  if(!file.size)return freshMsg("bad","That file is empty. Choose another one.");
+  const prev=latestFresh(cat),btn=qs("#freshBtn");btn.disabled=true;freshMsg("info","Uploading…");
+  const buf=await file.arrayBuffer();
+  try{
+    persistOnce();
+    await Vault.add(cat,{kind:"blank",source:"fresh",customer:"",policyNo:"",formCode:"",formLabel:"Fresh form",filename:file.name,mime,at:Date.now()},buf);
+    if(prev)await Vault.remove(cat,prev.id);          /* the new one is safely saved before the old one goes */
+    TEMP[cat]=null;freshDel=false;await refresh(cat);
+    freshMsg("good",prev?`Replaced with ${file.name}.`:`Uploaded ${file.name}.`);
+  }catch(e){
+    TEMP[cat]={filename:file.name,size:file.size,mime,blob:new Blob([buf],{type:mime})};freshDel=false;drawFresh();
+    freshMsg("warn","Uploaded for preview, but it couldn't be saved on this device. Check the browser has free storage.");
+  }finally{btn.disabled=false}
+}
+qs("#freshBtn").addEventListener("click",()=>{qs("#freshIn").value="";qs("#freshIn").click()});
+qs("#freshIn").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];if(f)freshTake(f)});
+qs("#freshActs").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-f]");if(!b||!W.cat)return;const cat=W.cat,f=b.dataset.f;
+  if(f==="replace"){qs("#freshBtn").click();return}
+  if(f==="remove"){freshDel=true;drawFresh();return}
+  if(f==="no"){freshDel=false;drawFresh();return}
+  if(f==="yes"){
+    try{const rec=latestFresh(cat);if(rec)await Vault.remove(cat,rec.id);TEMP[cat]=null;freshDel=false;await refresh(cat);freshMsg("good","Form removed. You can upload another one.")}
+    catch(err){freshMsg("bad",err&&err.message||"Couldn't remove it.")}
+  }
+});
+
 /* ---------- screens and routing ---------- */
 /* each workspace offers only its own forms */
 const MODES={nbz:["nom"],psf:["psf1a","psf1","psf"]};
@@ -2193,6 +2297,8 @@ function show(cat,tab){
   qs("#wsBadge").textContent=CATS[cat].code;qs("#wsTitle").textContent=CATS[cat].name;
   qs("#tabForms").setAttribute("aria-selected",String(tab==="forms"));qs("#tabDocs").setAttribute("aria-selected",String(tab==="docs"));
   qs("#fillView").hidden=tab!=="forms";
+  qs("#freshWrap").hidden=tab!=="forms";
+  if(changed){freshMsg(null);freshDel=false}
   if(tab==="forms")pickForms(cat);
   qs("#docsView").hidden=tab!=="docs";
   if(changed)qs("#dAddPanel").hidden=true;
